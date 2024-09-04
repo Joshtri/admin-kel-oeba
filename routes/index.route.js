@@ -5,7 +5,7 @@ import * as loginController from "../controllers/index.controller.js";
 
 router.get('/', loginController.loginPage);
 
-// router.post('/login', loginController.loginUser);
+router.post('/login', loginController.loginUser);
 
 
 export default router;
