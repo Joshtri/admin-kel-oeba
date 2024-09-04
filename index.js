@@ -17,7 +17,7 @@ import indexRoute from './routes/index.route.js';
 import dashboardRoute from './routes/dashboard.route.js';
 import userRoute from './routes/user.route.js';
 import kegiatanRoute from './routes/kegiatan.route.js';
-import publikasiRoute from './routes/publikasi.route.js';
+// import publikasiRoute from './routes/publikasi.route.js';
 
 const app = express();
 const port = process.env.PORT || "3003";
@@ -65,7 +65,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', indexRoute, dashboardRoute);  // most top level sitemap.
-app.use('/adm/data',  userRoute,kegiatanRoute, publikasiRoute);
+app.use('/adm/data',  userRoute,kegiatanRoute);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
