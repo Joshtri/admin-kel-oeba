@@ -1,27 +1,27 @@
-import multer from 'multer';
-import path from 'path';
+import multer from "multer";
+import path from "path";
 
-// Define the storage location and file naming convention
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/'); // Anda dapat mengubah ini sesuai dengan direktori yang Anda inginkan
-  },
-  filename: function (req, file, cb) {
-    // Generate a unique filename with timestamp
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const storage = multer.memoryStorage();
 
-// Define the limits
-const limits = {
-  fileSize: 3 * 1024 * 1024 // 3 MB
-};
-
-// Create the multer configuration
-const multerConfig = multer({
+const uploadSinglePDF = multer({
   storage: storage,
-  limits: limits
-});
+  limits: { fileSize: 10000000 }, // 3 MB
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb, 'pdf');
+  }
+}).array("files"); // Upload 8 files
 
-export default multerConfig;
+// Check file Type
+function checkFileType(file, cb, fileType) {
+  // Allowed ext
+  const allowedFileTypes = fileType || ['pdf']; // Default: PDF
+  // Check ext
+  const extName = path.extname(file.originalname).toLowerCase().substring(1);
+  if (allowedFileTypes.includes(extName)) {
+    return cb(null, true);
+  } else {
+    cb(`Error: Allowed file types are ${allowedFileTypes.join(', ')}`);
+  }
+}
+
+export { uploadSinglePDF };
