@@ -134,6 +134,67 @@
     <%-include('kegiatan/delete_kegiatan'); %>
         <!-- srcipt untuk delete data kbli -->
 
+    <!-- Script JavaScript untuk handle file select dan submit form -->
+    <script>
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Kita tidak perlu menyetel input hidden untuk file base64
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            // Dapatkan elemen form dengan id kegiatanForm
+            const form = document.getElementById('kegiatanForm');
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(result.message || 'Kegiatan created successfully!');
+                    window.location.href = '/adm/data/kegiatan';
+                } else {
+                    alert(result.message || 'Terjadi kesalahan. Coba lagi.');
+                }
+            } catch (error) {
+                alert('Terjadi kesalahan. Coba lagi.');
+            }
+        }
+
+        // Tambahkan event listener pada form submit
+        document.getElementById('kegiatanForm').addEventListener('submit', handleSubmit);
+    </script>
+            <!-- srcipt untuk delete data kbli -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          var deleteButtons = document.querySelectorAll('.delete-btn');
+          var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+          var deleteForm = document.getElementById('deleteForm');
+          var deleteIdInput = document.getElementById('deleteId');
+
+          deleteButtons.forEach(function(button) {
+              button.addEventListener('click', function() {
+                  var id = this.getAttribute('data-id');
+                  deleteForm.setAttribute('action', '/adm/data/kegiatan/' + id + '?_method=DELETE');
+                  deleteIdInput.value = id;
+                  deleteModal.show();
+              });
+          });
+
+          
+      });
+    </script>
+
     
 
     <script src="/js/tooltip.js"></script>
