@@ -62,7 +62,7 @@
                 <td><%= pengumumanData[i].judul_pengumuman %></td>
                 <td><%= new Date(pengumumanData[i].tanggal_pengumuman).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %></td>
                 <td><%= pengumumanData[i].deskripsi_pengumuman %></td>
-                <td> <a href="<%= pengumumanData[i].berkas_pengumuman_pdf %>">Berkas</a></td>
+                <td> <a href="<%= pengumumanData[i].berkas_pengumuman_pdf %>">Lihat Berkas</a></td>
                 
                 <td>
                   <a class="btn btn-light btn-sm" href="/adm/data/edit_kegiatan/<%= %>"><i class="fa-regular fa-pen-to-square"></i></a>
