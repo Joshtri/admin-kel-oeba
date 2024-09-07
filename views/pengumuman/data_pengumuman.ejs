@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%-include('partials/head');%>
+
+<body>
+    <%-include('partials/header');%>
+
+
+    <style>
+        .custom-table td,
+        .custom-table th {
+            font-size: 14px; /* Adjust the font size as needed */
+        }
+
+        #current-time {
+          font-size: 0.875rem; /* Sesuaikan ukuran font sesuai kebutuhan */
+          color: #000; /* Sesuaikan warna teks sesuai kebutuhan */
+        }
+    </style>
+
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb" class="small d-flex justify-content-between">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/main/dashboard"><i class="fa-solid fa-house me-1"></i>Dashboard</a></li>
+                <!-- <li class="breadcrumb-item"><a href="#">Data</a></li> -->
+                <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+            </ol>
+            <div id="current-time" class="align-self-center"></div>
+        </nav>
+        <hr>
+
+
+        <div class="d-flex justify-content-between">
+            <div>
+                <a class="btn btn-sm btn-warning" href="/adm/data/add_pengumuman">Tambah Data</a>
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <div class="container mt-5">
+        <table class="table custom-table" id="data-table-view">
+            <thead>
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">Nama Kegiatan</th>
+                <th scope="col">Tanggal Kegiatan</th>
+                <th scope="col">Deskripsi Kegiatan</th>
+                <th scope="col">Foto Kegiatan</th>
+                <th scope="col">Aksi</th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+            <% for(let i=0; i < 2; i++) { %>
+              <tr>
+                <th scope="row"><%= i + 1%></th>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <a class="btn btn-light btn-sm" href="/adm/data/edit_kegiatan/<%= %>"><i class="fa-regular fa-pen-to-square"></i></a>
+
+                    <a class="btn btn-light btn-sm delete-btn" data-bs-toggle="tooltip" data-bs-title="Delete this data" data-id="<%= %>">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </a>
+                </td>
+              </tr>
+            <% } %>
+             
+
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

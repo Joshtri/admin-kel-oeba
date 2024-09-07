@@ -83,3 +83,32 @@ export const createPengumuman = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+export const getPengumuman = async(req,res)=>{
+    const title = "Data Pengumuman";
+    try {
+
+        res.render('data_pengumuman',{
+            title
+        })
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+
+}
+
+export const addPengumuman = async(req,res)=>{
+    const title = "Add Pengumuman";
+    try {
+
+        res.render('add_pengumuman',{
+            title
+        })
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+
+}

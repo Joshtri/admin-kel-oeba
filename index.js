@@ -17,6 +17,7 @@ import indexRoute from './routes/index.route.js';
 import dashboardRoute from './routes/dashboard.route.js';
 import userRoute from './routes/user.route.js';
 import kegiatanRoute from './routes/kegiatan.route.js';
+import pengumumanRoute from './routes/pengumuman.route.js';
 // import publikasiRoute from './routes/publikasi.route.js';
 
 const app = express();
@@ -28,7 +29,7 @@ connectDB();
 // Tentukan lokasi folder views
 const viewsDirectories = [
     path.join(__dirname, 'views'),
-    path.join(__dirname, 'views', 'keluarga'),
+    path.join(__dirname, 'views', 'pengumuman'),
     path.join(__dirname, 'views', 'user'),
     path.join(__dirname, 'views', 'kegiatan'),
     path.join(__dirname, 'views', 'publikasi'),
@@ -65,7 +66,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/', indexRoute, dashboardRoute);  // most top level sitemap.
-app.use('/adm/data',  userRoute,kegiatanRoute);
+app.use('/adm/data',  userRoute,kegiatanRoute, pengumumanRoute);
 
 // catch 404 and forward to error handler
 // app.use((req, res, next) => {
