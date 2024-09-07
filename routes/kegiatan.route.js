@@ -19,7 +19,7 @@ kegiatanRoute.get('/add_kegiatan',protect, kegiatanController.addKegiatanPage);
 
 
 // Route untuk submit form tambah kegiatan (POST)
-kegiatanRoute.post('/kegiatan', upload.single('foto_kegiatan'), kegiatanController.createKegiatan); // Menangani file upload dan memproses data
+kegiatanRoute.post('/kegiatan',protect, upload.single('foto_kegiatan'), kegiatanController.createKegiatan); // Menangani file upload dan memproses data
 
 
 export default kegiatanRoute;
