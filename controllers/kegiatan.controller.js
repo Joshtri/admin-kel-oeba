@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-catch */
 import * as kegiatanServices from '../services/kegiatan.services.js';
-import { ref, getDownloadURL, uploadBytesResumable, getStorage } from "firebase/storage"; // Pastikan ini sudah di-import
+import { ref, getDownloadURL, uploadBytesResumable, getStorage, deleteObject } from "firebase/storage"; // Pastikan ini sudah di-import
 import { signInWithEmailAndPassword } from "firebase/auth"; // Firebase Auth
 import Kegiatan from '../models/kegiatan.model.js'; // Import model Kegiatan
 import { auth } from '../config/firebaseConfig.js'; // Sesuaikan dengan path modul Anda
@@ -122,3 +122,101 @@ export const addKegiatanPage = async(req,res)=>{
         throw error;
     }
 }
+
+
+export const deleteKegiatan = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find the Kegiatan by ID
+        const kegiatan = await Kegiatan.findById(id);
+
+        if (!kegiatan) {
+            return res.status(404).send('Kegiatan tidak ditemukan');
+        }
+
+        // If there is a photo, delete it from Firebase Storage
+        if (kegiatan.foto_kegiatan) {
+            const storage = getStorage(); // Initialize Firebase Storage
+            const storageRef = ref(storage, kegiatan.foto_kegiatan);
+
+            // Delete the file from Firebase Storage
+            await deleteObject(storageRef);
+        }
+
+        // Delete the Kegiatan from MongoDB
+        await Kegiatan.findByIdAndDelete(id);
+
+        // Send success response
+        res.status(200).send('Kegiatan berhasil dihapus');
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).send('Terjadi kesalahan saat menghapus kegiatan');
+    }
+};
+
+export const editKegiatanPage = async (req, res) => {
+    const title = "Edit Kegiatan";
+    try {
+        const { id } = req.params;
+        const kegiatan = await Kegiatan.findById(id);
+
+        if (!kegiatan) {
+            return res.status(404).send('Kegiatan tidak ditemukan');
+        }
+
+        res.render('edit_kegiatan', {
+            title,
+            kegiatan
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Terjadi kesalahan saat memuat halaman edit');
+    }
+};
+
+export const updateKegiatan = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { nama_kegiatan, tanggal_kegiatan, deskripsi_kegiatan } = req.body;
+        const file = req.file;
+
+        // Find the Kegiatan by ID
+        const kegiatan = await Kegiatan.findById(id);
+
+        if (!kegiatan) {
+            return res.status(404).send('Kegiatan tidak ditemukan');
+        }
+
+        // If there's a new file, upload it and update the reference
+        if (file) {
+            const dateTime = Date.now();
+            const fileName = `images/${dateTime}_${file.originalname}`;
+            const storageRef = ref(getStorage(), fileName);
+            const metadata = { contentType: file.mimetype };
+            const uploadTask = await uploadBytesResumable(storageRef, file.buffer, metadata);
+            const newFileUrl = await getDownloadURL(uploadTask.ref);
+
+            // Delete old file from Firebase Storage if it exists
+            if (kegiatan.foto_kegiatan) {
+                const oldStorageRef = ref(getStorage(), kegiatan.foto_kegiatan);
+                await deleteObject(oldStorageRef);
+            }
+
+            kegiatan.foto_kegiatan = newFileUrl;
+        }
+
+        // Update Kegiatan details
+        kegiatan.nama_kegiatan = nama_kegiatan;
+        kegiatan.tanggal_kegiatan = tanggal_kegiatan;
+        kegiatan.deskripsi_kegiatan = deskripsi_kegiatan;
+
+        await kegiatan.save();
+
+        req.flash('successUpHse', 'Kegiatan berhasil diperbarui');
+        res.redirect('/adm/data/kegiatan');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Terjadi kesalahan saat memperbarui kegiatan');
+    }
+};

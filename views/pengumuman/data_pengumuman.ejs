@@ -65,7 +65,7 @@
                 <td> <a href="<%= pengumumanData[i].berkas_pengumuman_pdf %>">Lihat Berkas</a></td>
                 
                 <td>
-                  <a class="btn btn-light btn-sm" href="/adm/data/edit_kegiatan/<%= %>"><i class="fa-regular fa-pen-to-square"></i></a>
+                  <a class="btn btn-light btn-sm" href="/adm/data/pengumuman/edit/<%= pengumumanData[i].id %>"><i class="fa-regular fa-pen-to-square"></i></a>
 
                     <a class="btn btn-light btn-sm delete-btn" data-bs-toggle="tooltip" data-bs-title="Delete this data" onclick="confirmDelete('<%= pengumumanData[i]._id %>')">
                         <i class="fa-solid fa-trash-can"></i>

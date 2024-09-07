@@ -124,8 +124,9 @@
                     <% } %>
                   </td>
                   <td>
-                    <a class="btn btn-light btn-sm" href="/adm/data/edit_kegiatan/<%= kegiatanData[i]._id %>"><i class="fa-regular fa-pen-to-square"></i></a>
-                    <a class="btn btn-light btn-sm delete-btn" data-bs-toggle="tooltip" data-bs-title="Delete this data" data-id="<%= kegiatanData[i]._id %>">
+                    <a class="btn btn-light btn-sm" href="/adm/data/kegiatan/edit/<%= kegiatanData[i]._id %>"><i class="fa-regular fa-pen-to-square"></i></a>
+                    
+                    <a class="btn btn-light btn-sm delete-btn" data-bs-toggle="tooltip" data-bs-title="Delete this data" onclick="confirmDelete('<%= kegiatanData[i]._id %>')">
                       <i class="fa-solid fa-trash-can"></i>
                     </a>
                   </td>
@@ -137,8 +138,31 @@
         </table>
     </div>
 
-    <%-include('kegiatan/delete_kegiatan'); %>
-        <!-- srcipt untuk delete data kbli -->
+
+
+
+    <script>
+      function confirmDelete(id) {
+          if (confirm("Apakah Anda yakin ingin menghapus kegiatan ini?")) {
+              fetch(`/adm/data/kegiatan/${id}`, {
+                  method: 'DELETE'
+              })
+              .then(response => {
+                  if (response.ok) {
+                      alert('Kegiatan berhasil dihapus');
+                      window.location.reload();
+                  } else {
+                      alert('Gagal menghapus kegiatan');
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  alert('Terjadi kesalahan');
+              });
+          }
+      }
+  </script>
+  
 
     
 

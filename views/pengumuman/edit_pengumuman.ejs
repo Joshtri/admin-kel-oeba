@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%-include('partials/head');%>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<body>
+    <%-include('partials/header');%>
+    
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb" class="small d-flex justify-content-between">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/main/dashboard"><i class="fa-solid fa-house me-1"></i>Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="/adm/data/pengumuman">Data Pengumuman</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><%= title %></li>
+            </ol>
+        </nav>
+        <hr>
+
+        <form action="/adm/data/pengumuman/<%= pengumuman._id %>" method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="judul_pengumuman" class="form-label">Judul Pengumuman</label>
+                <input type="text" class="form-control" id="judul_pengumuman" name="judul_pengumuman" value="<%= pengumuman.judul_pengumuman %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="tanggal_pengumuman" class="form-label">Tanggal Pengumuman</label>
+                <input type="date" class="form-control" id="tanggal_pengumuman" name="tanggal_pengumuman" value="<%= new Date(pengumuman.tanggal_pengumuman).toISOString().split('T')[0] %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="deskripsi_pengumuman" class="form-label">Deskripsi Pengumuman</label>
+                <textarea class="form-control" id="deskripsi_pengumuman" name="deskripsi_pengumuman" rows="3" required><%= pengumuman.deskripsi_pengumuman %></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="berkas_pengumuman_pdf" class="form-label">Berkas Pengumuman (PDF)</label>
+                <input type="file" class="form-control" id="berkas_pengumuman_pdf" name="berkas_pengumuman_pdf">
+                <% if (pengumuman.berkas_pengumuman_pdf) { %>
+                    <a href="<%= pengumuman.berkas_pengumuman_pdf %>" target="_blank">Lihat Berkas Lama</a>
+                <% } %>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Pengumuman</button>
+        </form>
+    </div>
+</body>
+</html>
