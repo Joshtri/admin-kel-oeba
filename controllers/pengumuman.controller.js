@@ -3,59 +3,47 @@ import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "fire
 import { auth } from '../config/firebaseConfig.js'; // Sesuaikan dengan path modul Anda
 import Pengumuman from '../models/pengumuman.model.js';
 
-
 // Fungsi untuk mengunggah file PDF ke Firebase Storage dan menyimpan data teks ke MongoDB
-async function uploadSinglePDF(files, pengumumanData) {
+async function uploadSinglePDF(file, pengumumanData) {
     try {
-        // Sign in ke Firebase jika belum
-        // eslint-disable-next-line no-undef
-        await signInWithEmailAndPassword(auth, process.env.FIREBASE_USER, process.env.FIREBASE_AUTH);
+        // Sign in to Firebase
+        await signInWithEmailAndPassword(auth, 'stuffofyos1516@gmail.com', 'oebaisthebestloh');
 
-        // Mendapatkan timestamp untuk nama file unik
         const dateTime = Date.now();
+        let uploadedFileName = null;
 
-        // Membuat array untuk menyimpan nama file hasil upload
-        const uploadedFileNames = [];
-
-        // Loop melalui setiap file dan mengunggah ke Firebase Storage
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const fileName = `pdf/${dateTime}_${i + 1}`;
+        // Upload file jika ada
+        if (file) {
+            const fileName = `pdf/${dateTime}_${file.originalname}`;
             const storageRef = ref(getStorage(), fileName);
-            const metadata = {
-                contentType: file.mimetype,
-            };
-            await uploadBytesResumable(storageRef, file.buffer, metadata);
-            uploadedFileNames.push(fileName);
+            const metadata = { contentType: file.mimetype };
+            const uploadTask = await uploadBytesResumable(storageRef, file.buffer, metadata);
+
+            // Mendapatkan URL dari file yang di-upload
+            uploadedFileName = await getDownloadURL(uploadTask.ref);
         }
 
-        // Menyimpan data HSEPlan ke MongoDB dengan path file yang diunggah
+        // Save announcement to MongoDB
         const newPengumuman = new Pengumuman({
             judul_pengumuman: pengumumanData.judul_pengumuman,
             tanggal_pengumuman: pengumumanData.tanggal_pengumuman,
             deskripsi_pengumuman: pengumumanData.deskripsi_pengumuman,
-
-            berkas_pengumuman_pdf: uploadedFileNames[0],
-            // file2: uploadedFileNames[1],
-            // file3: uploadedFileNames[2],
-            // file4: uploadedFileNames[3],
-
-
+            berkas_pengumuman_pdf: uploadedFileName,
         });
 
-        // Menyimpan data HSEPlan ke MongoDB
         await newPengumuman.save();
-
-        return uploadedFileNames;
+        return uploadedFileName;
     } catch (error) {
-        console.error(error); // Mencetak kesalahan ke konsol
+        console.error("Error uploading file:", error);
         throw error;
     }
 }
 
+
+
 export const createPengumuman = async (req, res) => {
     try {
-        // Validasi apakah semua properti yang diperlukan telah disertakan dalam request body
+        // Validate required fields
         const requiredFields = ['judul_pengumuman', 'tanggal_pengumuman', 'deskripsi_pengumuman'];
         for (const field of requiredFields) {
             if (!req.body[field]) {
@@ -67,19 +55,19 @@ export const createPengumuman = async (req, res) => {
             judul_pengumuman: req.body.judul_pengumuman,
             tanggal_pengumuman: req.body.tanggal_pengumuman,
             deskripsi_pengumuman: req.body.deskripsi_pengumuman,
-
         };
 
-        // Memanggil fungsi untuk mengunggah file PDF dan menyimpan data HSEPlan
-        const uploadedFileNames = await uploadSinglePDF(req.files, pengumumanData);
-        await req.flash('successUpHse', 'Data Pengumuman berhasil di upload');
+        // Call the upload function
+        const uploadedFileName = await uploadSinglePDF(req.file, pengumumanData);
 
-        console.log(`berhasil upload`);
+        req.flash('successUpHse', 'Data Pengumuman berhasil di upload');
 
-        // Redirect atau berikan respons sesuai kebutuhan Anda
-        res.redirect('/form_mitra'); // Ganti rute ini sesuai dengan kebutuhan Anda
+        console.log(`Upload success, file name: ${uploadedFileName}`);
+
+        // Redirect or respond
+        res.redirect('/adm/data/pengumuman');
     } catch (error) {
-        console.error(error);
+        console.error("Error:", error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -89,8 +77,11 @@ export const getPengumuman = async(req,res)=>{
     const title = "Data Pengumuman";
     try {
 
+        const pengumumanData = await Pengumuman.find();
+
         res.render('data_pengumuman',{
-            title
+            title,
+            pengumumanData
         })
     } catch (error) {
         console.log(error);
@@ -112,3 +103,34 @@ export const addPengumuman = async(req,res)=>{
     }
 
 }
+
+export const deletePengumuman = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Temukan pengumuman berdasarkan ID
+        const pengumuman = await Pengumuman.findById(id);
+
+        if (!pengumuman) {
+            return res.status(404).send('Pengumuman tidak ditemukan');
+        }
+
+        // Jika ada berkas PDF, hapus dari Firebase Storage
+        if (pengumuman.berkas_pengumuman_pdf) {
+            const storage = getStorage();
+            const storageRef = ref(storage, pengumuman.berkas_pengumuman_pdf);
+
+            // Hapus file dari Firebase Storage
+            await deleteObject(storageRef);
+        }
+
+        // Hapus data pengumuman dari MongoDB
+        await Pengumuman.findByIdAndDelete(id);
+
+        // Kirimkan respons sukses
+        res.status(200).send('Pengumuman berhasil dihapus');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Terjadi kesalahan saat menghapus pengumuman');
+    }
+};

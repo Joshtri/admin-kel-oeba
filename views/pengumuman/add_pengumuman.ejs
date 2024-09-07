@@ -18,25 +18,26 @@
         <a href="/adm/data/kegiatan" class="btn btn-secondary btn-sm">Kembali</a>
 
         <h2 class="mb-4">Input Pengumuman</h2>
-        <form id="kegiatanForm" class="row g-3">
+        <form method="POST" action="/adm/data/pengumuman" class="row g-3" enctype="multipart/form-data">
             <div class="col-md-6">
                 <label for="nama_kegiatan" class="form-label">Nama Pengumuman</label>
-                <input type="text" class="form-control" id="nama_kegiatan" name="nama_kegiatan" required>
+                <input type="text" class="form-control" id="judul_pengumuman" name="judul_pengumuman" required>
             </div>
 
             <div class="col-md-6">
                 <label for="tanggal_kegiatan" class="form-label">Tanggal Pengumuman</label>
-                <input type="date" class="form-control" id="tanggal_kegiatan" name="tanggal_kegiatan" required>
+                <input type="date" class="form-control" id="tanggal_pengumuman" name="tanggal_pengumuman" required>
             </div>
         
             <div class="col-12">
                 <label for="deskripsi_kegiatan" class="form-label">Deskripsi Pengumuman</label>
-                <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="3" required></textarea>
+                <textarea class="form-control" id="deskripsi_pengumuman" name="deskripsi_pengumuman" rows="3" required></textarea>
             </div>
             <div class="col-12">
                 <label for="foto_kegiatan" class="form-label">Berkas Pengumuman (PDF)</label>
-                <input class="form-control" type="file" id="foto_kegiatan" name="foto_kegiatan" accept="*" required>
-
+                <input type="file" id="file" name="file" accept="application/pdf">
+     
+                <div class="form-text" id="basic-addon4">* File PDF ( ukuran file maksimal 3 Mb).</div>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Submit</button>

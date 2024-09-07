@@ -7,7 +7,7 @@ function setTodayDate() {
     const day = String(today.getDate()).padStart(2, '0');
     const formattedDate = `${year}-${month}-${day}`;
     
-    document.getElementById('tanggal_kegiatan').value = formattedDate;
+    document.getElementById('tanggal_pengumuman').value = formattedDate;
 }
 
 // Call the function when the page loads

@@ -46,27 +46,28 @@
             <thead>
               <tr>
                 <th scope="col">No</th>
-                <th scope="col">Nama Kegiatan</th>
-                <th scope="col">Tanggal Kegiatan</th>
-                <th scope="col">Deskripsi Kegiatan</th>
-                <th scope="col">Foto Kegiatan</th>
+                <th scope="col">Nama Pengumuman</th>
+                <th scope="col">Tanggal Pengumuman</th>
+                <th scope="col">Deskripsi Pengumuman</th>
+                <th scope="col">File PDF</th>
                 <th scope="col">Aksi</th>
 
               </tr>
             </thead>
             <tbody>
 
-            <% for(let i=0; i < 2; i++) { %>
+            <% for(let i=0; i < pengumumanData.length; i++) { %>
               <tr>
                 <th scope="row"><%= i + 1%></th>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td><%= pengumumanData[i].judul_pengumuman %></td>
+                <td><%= new Date(pengumumanData[i].tanggal_pengumuman).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %></td>
+                <td><%= pengumumanData[i].deskripsi_pengumuman %></td>
+                <td> <a href="<%= pengumumanData[i].berkas_pengumuman_pdf %>">Berkas</a></td>
+                
                 <td>
                   <a class="btn btn-light btn-sm" href="/adm/data/edit_kegiatan/<%= %>"><i class="fa-regular fa-pen-to-square"></i></a>
 
-                    <a class="btn btn-light btn-sm delete-btn" data-bs-toggle="tooltip" data-bs-title="Delete this data" data-id="<%= %>">
+                    <a class="btn btn-light btn-sm delete-btn" data-bs-toggle="tooltip" data-bs-title="Delete this data" onclick="confirmDelete('<%= pengumumanData[i]._id %>')">
                         <i class="fa-solid fa-trash-can"></i>
                     </a>
                 </td>
@@ -77,5 +78,27 @@
             </tbody>
         </table>
     </div>
+
+    <script>
+        function confirmDelete(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus pengumuman ini?")) {
+                fetch(`/adm/data/pengumuman/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Pengumuman berhasil dihapus');
+                        window.location.reload();
+                    } else {
+                        alert('Gagal menghapus pengumuman');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan');
+                });
+            }
+        }
+    </script>
 </body>
 </html>
