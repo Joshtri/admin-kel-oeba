@@ -110,22 +110,28 @@
             </thead>
             <tbody>
 
-            <% for(let i=0; i < kegiatanData.length;i++) { %>
-              <tr>
-                <th scope="row"><%= i + 1%></th>
-                <td><%= kegiatanData[i].nama_kegiatan %></td>
-                <td><%= new Date(kegiatanData[i].tanggal_kegiatan).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %></td>
-                <td><%= kegiatanData[i].deskripsi_kegiatan %></td>
-                <td><img src="data:image/png;base64,<%= kegiatanData[i].foto_kegiatan %>" alt="Foto Kegiatan" style="max-width: 100px;"></td>
-                <td>
-                  <a class="btn btn-light btn-sm" href="/adm/data/edit_kegiatan/<%= kegiatanData[i]._id %>"><i class="fa-regular fa-pen-to-square"></i></a>
-
+              <% for(let i = 0; i < kegiatanData.length; i++) { %>
+                <tr>
+                  <th scope="row"><%= i + 1 %></th>
+                  <td><%= kegiatanData[i].nama_kegiatan %></td>
+                  <td><%= new Date(kegiatanData[i].tanggal_kegiatan).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) %></td>
+                  <td><%= kegiatanData[i].deskripsi_kegiatan %></td>
+                  <td>
+                    <% if (kegiatanData[i].foto_kegiatan) { %>
+                      <img src="<%= kegiatanData[i].foto_kegiatan %>" alt="Foto Kegiatan" style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                    <% } else { %>
+                      <span>Tidak ada gambar</span>
+                    <% } %>
+                  </td>
+                  <td>
+                    <a class="btn btn-light btn-sm" href="/adm/data/edit_kegiatan/<%= kegiatanData[i]._id %>"><i class="fa-regular fa-pen-to-square"></i></a>
                     <a class="btn btn-light btn-sm delete-btn" data-bs-toggle="tooltip" data-bs-title="Delete this data" data-id="<%= kegiatanData[i]._id %>">
-                        <i class="fa-solid fa-trash-can"></i>
+                      <i class="fa-solid fa-trash-can"></i>
                     </a>
-                </td>
-              </tr>
+                  </td>
+                </tr>
               <% } %>
+              
 
             </tbody>
         </table>

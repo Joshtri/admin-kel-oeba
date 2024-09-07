@@ -18,7 +18,7 @@
         <a href="/adm/data/kegiatan" class="btn btn-secondary btn-sm">Kembali</a>
 
         <h2 class="mb-4">Input Kegiatan</h2>
-        <form id="kegiatanForm" class="row g-3">
+        <form action="/adm/data/kegiatan" method="POST" enctype="multipart/form-data" class="row g-3">
             <div class="col-md-6">
                 <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
                 <input type="text" class="form-control" id="nama_kegiatan" name="nama_kegiatan" required>
@@ -32,8 +32,8 @@
                 <textarea class="form-control" id="deskripsi_kegiatan" name="deskripsi_kegiatan" rows="3" required></textarea>
             </div>
             <div class="col-12">
-                <label for="foto_kegiatan" class="form-label">Foto Kegiatan</label>
-                <input class="form-control" type="file" id="foto_kegiatan" name="foto_kegiatan" accept="*" required>
+                <label for="foto_kegiatan">Foto Kegiatan (JPEG/PNG, Max 2MB):</label>
+                <input type="file" id="foto_kegiatan" name="foto_kegiatan" accept="image/*" required>
 
             </div>
             <div class="col-12">
