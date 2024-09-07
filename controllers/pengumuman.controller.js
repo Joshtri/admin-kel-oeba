@@ -81,11 +81,7 @@ export const createPengumuman = async (req, res) => {
 export const getPengumuman = async(req,res)=>{
     const title = "Data Pengumuman";
     try {
-        const pass = process.env.FIREBASE_PASS;
-        const user = process.env.FIREBASE_USER;
-
-        console.log(pass);
-        console.log(user);
+        
         const pengumumanData = await Pengumuman.find();
 
         res.render('data_pengumuman',{
