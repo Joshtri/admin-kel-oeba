@@ -1,13 +1,18 @@
-import { getStorage, ref, list, deleteObject ,uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+/* eslint-disable no-undef */
+import { getStorage, ref,  deleteObject ,uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../config/firebaseConfig.js'; // Sesuaikan dengan path modul Anda
 import Pengumuman from '../models/pengumuman.model.js';
-
+import { config } from 'dotenv';
+config();
 // Fungsi untuk mengunggah file PDF ke Firebase Storage dan menyimpan data teks ke MongoDB
 async function uploadSinglePDF(file, pengumumanData) {
     try {
+        const pass = process.env.FIREBASE_PASS;
+        const user = process.env.FIREBASE_USER;
+
         // Sign in to Firebase
-        await signInWithEmailAndPassword(auth, 'stuffofyos1516@gmail.com', 'oebaisthebestloh');
+        await signInWithEmailAndPassword(auth, user, pass);
 
         const dateTime = Date.now();
         let uploadedFileName = null;
@@ -76,7 +81,11 @@ export const createPengumuman = async (req, res) => {
 export const getPengumuman = async(req,res)=>{
     const title = "Data Pengumuman";
     try {
+        const pass = process.env.FIREBASE_PASS;
+        const user = process.env.FIREBASE_USER;
 
+        console.log(pass);
+        console.log(user);
         const pengumumanData = await Pengumuman.find();
 
         res.render('data_pengumuman',{
